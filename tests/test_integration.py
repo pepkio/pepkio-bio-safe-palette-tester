@@ -6,8 +6,12 @@ import os
 
 import pytest
 
+from dotenv import load_dotenv
+
 from pepkio_bio_safe_palette_tester.client import PepkioClient
 from pepkio_bio_safe_palette_tester.config import TOOL_ID
+
+load_dotenv()
 
 # Local first, then production (param order).
 ENVIRONMENTS = [
@@ -18,7 +22,7 @@ ENVIRONMENTS = [
 
 def _api_key_for(base_url: str) -> str | None:
     if "localtest.me" in base_url:
-        return os.getenv("LOCAL_PEPKIO_API_KEY") or os.getenv("PEPKIO_API_KEY")
+        return os.getenv("LOCAL_PEPKIO_API_KEY")
     return os.getenv("PEPKIO_API_KEY")
 
 
@@ -28,6 +32,12 @@ def live_client(request):
     api_key = _api_key_for(base_url)
     if not api_key:
         pytest.skip(f"No API key for {env_name} (set LOCAL_PEPKIO_API_KEY or PEPKIO_API_KEY)")
+    probe_timeout = 1.0 if "localtest.me" in base_url else 10.0
+    try:
+        with PepkioClient(api_key=api_key, base_url=base_url, timeout=probe_timeout) as client:
+            client.get_manifest()
+    except Exception as exc:
+        pytest.skip(f"Environment {env_name} ({base_url}) unreachable: {exc}")
     with PepkioClient(api_key=api_key, base_url=base_url) as client:
         yield client
 
