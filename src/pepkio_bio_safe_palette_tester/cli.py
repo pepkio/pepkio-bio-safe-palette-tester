@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 """Command-line interface for pepkio-bio-safe-palette-tester."""
 
 from __future__ import annotations

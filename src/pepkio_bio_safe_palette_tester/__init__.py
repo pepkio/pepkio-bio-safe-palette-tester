@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 """Pepkio bio-safe-palette-tester Python Client."""
 
 from .client import PepkioClient

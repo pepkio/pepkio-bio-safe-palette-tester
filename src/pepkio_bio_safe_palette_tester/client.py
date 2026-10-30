@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 """HTTP client for the Pepkio bio-safe-palette-tester tool."""
 
 from __future__ import annotations
